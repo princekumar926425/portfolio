@@ -34,7 +34,6 @@ const FloatingBox = ({ position, scale, color, speed = 1, rotationSpeed = 0.3, f
           ior={1.5}
           envMapIntensity={2}
         />
-        />
       </mesh>
     </Float>
   );
