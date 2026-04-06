@@ -25,8 +25,8 @@ const FloatingBox = ({ position, scale, color, speed = 1, rotationSpeed = 0.3, f
   return (
     <Float speed={speed} rotationIntensity={0.2} floatIntensity={floatIntensity * 0.5}>
       <mesh ref={meshRef} position={position} scale={scale} castShadow>
-        <roundedBoxGeometry args={[1, 1, 1, 4, 0.15]} />
-        <MeshTransmissionMaterial
+        <boxGeometry args={[1, 1, 1]} />
+        <meshPhysicalMaterial
           color={color}
           thickness={0.5}
           roughness={0.1}
