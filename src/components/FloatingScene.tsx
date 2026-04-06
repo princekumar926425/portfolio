@@ -32,9 +32,8 @@ const FloatingBox = ({ position, scale, color, speed = 1, rotationSpeed = 0.3, f
           roughness={0.1}
           transmission={0.6}
           ior={1.5}
-          chromaticAberration={0.03}
-          backside
           envMapIntensity={2}
+        />
         />
       </mesh>
     </Float>
