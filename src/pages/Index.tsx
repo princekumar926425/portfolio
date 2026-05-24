@@ -1,10 +1,11 @@
 import { useCallback } from "react";
-import FloatingScene from "@/components/FloatingScene";
-import HeroSection from "@/components/HeroSection";
-import AboutSection from "@/components/AboutSection";
-import ProjectsSection from "@/components/ProjectsSection";
-import ContactSection from "@/components/ContactSection";
-import Navbar from "@/components/Navbar";
+import FloatingScene from "../components/FloatingScene";
+import HeroSection from "../components/HeroSection";
+import AboutSection from "../components/AboutSection";
+import SkillsSection from "../components/SkillsSection";
+import ProjectsSection from "../components/ProjectsSection";
+import ContactSection from "../components/ContactSection";
+import Navbar from "../components/Navbar";
 
 const Index = () => {
   const handleGetStarted = useCallback(() => {
@@ -22,7 +23,9 @@ const Index = () => {
       <div id="home">
         <HeroSection onGetStarted={handleGetStarted} />
       </div>
+
       <AboutSection />
+      <SkillsSection />
       <ProjectsSection />
       <ContactSection />
     </div>
