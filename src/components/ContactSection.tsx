@@ -2,7 +2,17 @@ import { useEffect, useRef, useState } from "react";
 
 const ContactSection = () => {
   const ref = useRef<HTMLDivElement>(null);
+
   const [visible, setVisible] = useState(false);
+
+  // Form states
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Submit states
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,6 +37,54 @@ const ContactSection = () => {
     };
   }, []);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      setStatus("Please fill all fields.");
+      return;
+    }
+
+    setLoading(true);
+    setStatus("");
+
+    try {
+      // Netlify Function
+      const response = await fetch("/.netlify/functions/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to send message");
+      }
+
+      setStatus("Message sent successfully! 🎉");
+
+      // Clear form after successful submission
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch (error) {
+      console.error("Contact form error:", error);
+
+      setStatus(
+        "Failed to send message. Please try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section
       id="contact"
@@ -48,6 +106,7 @@ const ContactSection = () => {
           ===================================================== */}
 
       <div className="mx-auto w-full max-w-7xl min-w-0">
+
         {/* ===================================================
             HEADING
             =================================================== */}
@@ -74,6 +133,7 @@ const ContactSection = () => {
             =================================================== */}
 
         <div className="grid min-w-0 gap-6 md:gap-8 lg:grid-cols-2">
+
           {/* =================================================
               LEFT FORM
               ================================================= */}
@@ -85,65 +145,103 @@ const ContactSection = () => {
                 : "-translate-x-10 opacity-0"
             }`}
           >
+
             {/* Glow */}
 
             <div className="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-green-300 via-emerald-400 to-green-500 opacity-20 blur-2xl sm:opacity-25" />
 
             <div className="relative z-10">
+
               <h3 className="mb-5 text-xl font-semibold text-white sm:text-2xl">
                 Send Me a Message
               </h3>
 
-              {/* Name + Email */}
+              <form onSubmit={handleSubmit}>
 
-              <div className="grid min-w-0 gap-4 sm:grid-cols-2">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  className="min-w-0 w-full rounded-xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none transition focus:border-green-400/50 focus:ring-2 focus:ring-green-400/10 sm:text-base"
+                {/* Name + Email */}
+
+                <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    disabled={loading}
+                    required
+                    className="min-w-0 w-full rounded-xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none transition focus:border-green-400/50 focus:ring-2 focus:ring-green-400/10 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
+                  />
+
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
+                    required
+                    className="min-w-0 w-full rounded-xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none transition focus:border-green-400/50 focus:ring-2 focus:ring-green-400/10 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
+                  />
+
+                </div>
+
+                {/* Message */}
+
+                <textarea
+                  placeholder="Your message..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  disabled={loading}
+                  required
+                  className="mt-4 min-h-[140px] w-full resize-none rounded-xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none transition focus:border-green-400/50 focus:ring-2 focus:ring-green-400/10 disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-[160px] sm:text-base"
                 />
 
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="min-w-0 w-full rounded-xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none transition focus:border-green-400/50 focus:ring-2 focus:ring-green-400/10 sm:text-base"
-                />
-              </div>
+                {/* Send Button */}
 
-              {/* Message */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="
+                    mt-5
+                    w-full
+                    rounded-full
+                    bg-gradient-to-r
+                    from-green-300
+                    via-emerald-400
+                    to-green-500
+                    py-3
+                    text-sm
+                    font-semibold
+                    text-black
+                    shadow-[0_0_25px_rgba(34,197,94,0.3)]
+                    transition
+                    duration-300
+                    hover:scale-[1.02]
+                    hover:shadow-[0_0_35px_rgba(34,197,94,0.5)]
+                    disabled:cursor-not-allowed
+                    disabled:opacity-60
+                    disabled:hover:scale-100
+                    sm:mt-6
+                    sm:text-base
+                  "
+                >
+                  {loading ? "Sending..." : "Send Message"}
+                </button>
 
-              <textarea
-                placeholder="Your message..."
-                className="mt-4 min-h-[140px] w-full resize-none rounded-xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none transition focus:border-green-400/50 focus:ring-2 focus:ring-green-400/10 sm:min-h-[160px] sm:text-base"
-              />
+                {/* Status Message */}
 
-              {/* Send Button */}
+                {status && (
+                  <p
+                    className={`mt-4 text-center text-sm ${
+                      status.includes("successfully")
+                        ? "text-green-400"
+                        : "text-red-400"
+                    }`}
+                  >
+                    {status}
+                  </p>
+                )}
 
-              <button
-                type="button"
-                className="
-                  mt-5
-                  w-full
-                  rounded-full
-                  bg-gradient-to-r
-                  from-green-300
-                  via-emerald-400
-                  to-green-500
-                  py-3
-                  text-sm
-                  font-semibold
-                  text-black
-                  shadow-[0_0_25px_rgba(34,197,94,0.3)]
-                  transition
-                  duration-300
-                  hover:scale-[1.02]
-                  hover:shadow-[0_0_35px_rgba(34,197,94,0.5)]
-                  sm:mt-6
-                  sm:text-base
-                "
-              >
-                Send Message
-              </button>
+              </form>
             </div>
           </div>
 
@@ -158,16 +256,19 @@ const ContactSection = () => {
                 : "translate-x-10 opacity-0"
             }`}
           >
+
             {/* Glow */}
 
             <div className="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-green-300 via-emerald-400 to-green-500 opacity-20 blur-2xl sm:opacity-25" />
 
             <div className="relative z-10 flex h-full flex-col justify-center">
+
               <h3 className="mb-6 text-xl font-semibold text-white sm:text-2xl">
                 Contact Info
               </h3>
 
               <div className="space-y-5 sm:space-y-6">
+
                 {/* Name */}
 
                 <div className="min-w-0">
@@ -233,6 +334,7 @@ const ContactSection = () => {
                     Frontend Developer &amp; DSA Solver
                   </p>
                 </div>
+
               </div>
             </div>
           </div>
@@ -243,6 +345,7 @@ const ContactSection = () => {
             =================================================== */}
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 px-2 text-sm text-white/70 sm:mt-10 sm:gap-6 sm:text-base">
+
           <a
             href="https://github.com/princekumar926425"
             target="_blank"
@@ -276,6 +379,7 @@ const ContactSection = () => {
           >
             LeetCode
           </a>
+
         </div>
 
         {/* ===================================================
@@ -285,6 +389,7 @@ const ContactSection = () => {
         <p className="mt-5 px-2 text-center text-xs leading-6 text-white/40 sm:mt-6 sm:text-sm">
           © 2026 Prince Kumar Ray. Built with passion ⚡
         </p>
+
       </div>
     </section>
   );
