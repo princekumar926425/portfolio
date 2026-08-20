@@ -20,28 +20,80 @@ const skills = [
 
 const SkillsSection = () => {
   const ref = useRef<HTMLDivElement>(null);
+
   const [visible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  /*
+   * Only keep tilt state for desktop.
+   * Mobile does not need mouse tilt.
+   */
   const [tilts, setTilts] = useState(
-    skills.map(() => ({ rotateX: 0, rotateY: 0, x: 50, y: 50 }))
+    skills.map(() => ({
+      rotateX: 0,
+      rotateY: 0,
+      x: 50,
+      y: 50,
+    }))
   );
+
+  /* ==========================================
+     RESPONSIVE CHECK
+  ========================================== */
+
+  useEffect(() => {
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreen();
+
+    window.addEventListener("resize", checkScreen);
+
+    return () => {
+      window.removeEventListener("resize", checkScreen);
+    };
+  }, []);
+
+  /* ==========================================
+     INTERSECTION OBSERVER
+  ========================================== */
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
       },
-      { threshold: 0.15 }
+      {
+        threshold: 0.1,
+      }
     );
 
-    if (ref.current) observer.observe(ref.current);
+    const currentRef = ref.current;
 
-    return () => observer.disconnect();
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
+
+  /* ==========================================
+     DESKTOP MOUSE TILT
+  ========================================== */
 
   const handleMouseMove = (
     e: React.MouseEvent<HTMLDivElement>,
     index: number
   ) => {
+    // Disable on mobile
+    if (isMobile) return;
+
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
 
@@ -51,8 +103,8 @@ const SkillsSection = () => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateY = ((x - centerX) / centerX) * 12;
-    const rotateX = -((y - centerY) / centerY) * 12;
+    const rotateY = ((x - centerX) / centerX) * 7;
+    const rotateX = -((y - centerY) / centerY) * 7;
 
     const xPercent = (x / rect.width) * 100;
     const yPercent = (y / rect.height) * 100;
@@ -60,16 +112,34 @@ const SkillsSection = () => {
     setTilts((prev) =>
       prev.map((item, i) =>
         i === index
-          ? { rotateX, rotateY, x: xPercent, y: yPercent }
+          ? {
+              rotateX,
+              rotateY,
+              x: xPercent,
+              y: yPercent,
+            }
           : item
       )
     );
   };
 
+  /* ==========================================
+     RESET TILT
+  ========================================== */
+
   const handleMouseLeave = (index: number) => {
+    if (isMobile) return;
+
     setTilts((prev) =>
       prev.map((item, i) =>
-        i === index ? { rotateX: 0, rotateY: 0, x: 50, y: 50 } : item
+        i === index
+          ? {
+              rotateX: 0,
+              rotateY: 0,
+              x: 50,
+              y: 50,
+            }
+          : item
       )
     );
   };
@@ -78,119 +148,323 @@ const SkillsSection = () => {
     <section
       id="skills"
       ref={ref}
-      className="relative z-10 min-h-screen overflow-hidden px-4 py-24 sm:px-6 lg:px-8"
-      style={{ perspective: "1800px" }}
+      className="
+        relative
+        z-10
+        min-h-screen
+        w-full
+        overflow-hidden
+        px-4
+        py-16
+
+        sm:px-6
+        sm:py-20
+
+        lg:px-8
+        lg:py-24
+      "
+      style={{
+        perspective: isMobile ? "none" : "1800px",
+      }}
     >
+      {/* ==========================================
+          ANIMATIONS
+      ========================================== */}
+
       <style>
         {`
           @keyframes skillShine {
-            0% { transform: translateX(-160%); }
-            100% { transform: translateX(340%); }
+            0% {
+              transform: translateX(-160%);
+            }
+
+            100% {
+              transform: translateX(340%);
+            }
           }
 
           @keyframes floatOrb {
             0%, 100% {
-              transform: translateY(0px) translateX(0px) scale(1);
+              transform: translate3d(0, 0, 0) scale(1);
             }
+
             50% {
-              transform: translateY(-24px) translateX(14px) scale(1.08);
+              transform: translate3d(14px, -24px, 0) scale(1.05);
             }
           }
 
           @keyframes slideInLeft3D {
             0% {
               opacity: 0;
-              transform: translateX(-90px) translateY(35px) rotateY(22deg) scale(0.9);
+              transform: translate3d(-60px, 25px, 0) rotateY(12deg) scale(0.95);
             }
+
             100% {
               opacity: 1;
-              transform: translateX(0) translateY(0) rotateY(0deg) scale(1);
+              transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
             }
           }
 
           @keyframes glowRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-
-          @keyframes pulseGlow {
-            0%, 100% { opacity: 0.45; }
-            50% { opacity: 0.95; }
-          }
-
-          @keyframes headingSlide {
             0% {
-              opacity: 0;
-              transform: translateX(-70px);
+              transform: translate(-50%, -50%) rotate(0deg);
             }
-            100% {
-              opacity: 1;
-              transform: translateX(0);
-            }
-          }
 
-          @keyframes beamMove {
-            0% {
-              transform: translateX(-150%) skewX(-18deg);
-            }
             100% {
-              transform: translateX(320%) skewX(-18deg);
+              transform: translate(-50%, -50%) rotate(360deg);
             }
           }
 
           @keyframes breathe {
-            0%,100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.08); opacity: 1; }
+            0%, 100% {
+              transform: scale(1);
+              opacity: 0.5;
+            }
+
+            50% {
+              transform: scale(1.05);
+              opacity: 0.8;
+            }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            * {
+              animation: none !important;
+              transition: none !important;
+            }
+          }
+
+          @media (max-width: 767px) {
+            .skill-card {
+              backdrop-filter: blur(8px) !important;
+              -webkit-backdrop-filter: blur(8px) !important;
+            }
+
+            .skill-orb {
+              animation: none !important;
+            }
+
+            .skill-ring {
+              animation: none !important;
+            }
+
+            .skill-beam {
+              display: none !important;
+            }
           }
         `}
       </style>
 
-      {/* background */}
+      {/* ==========================================
+          BACKGROUND GLOWS
+      ========================================== */}
+
       <div
-        className="absolute left-[7%] top-20 h-56 w-56 rounded-full bg-yellow-400/10 blur-[100px]"
-        style={{ animation: "floatOrb 7s ease-in-out infinite" }}
-      />
-      <div
-        className="absolute right-[8%] top-36 h-72 w-72 rounded-full bg-orange-500/10 blur-[120px]"
-        style={{ animation: "floatOrb 9s ease-in-out infinite" }}
-      />
-      <div
-        className="absolute bottom-14 left-1/3 h-64 w-64 rounded-full bg-amber-300/10 blur-[130px]"
-        style={{ animation: "floatOrb 8s ease-in-out infinite" }}
-      />
-      <div
-        className="absolute bottom-20 right-1/4 h-40 w-40 rounded-full bg-yellow-200/10 blur-[100px]"
-        style={{ animation: "breathe 5s ease-in-out infinite" }}
+        className="
+          skill-orb
+          pointer-events-none
+          absolute
+          left-[5%]
+          top-16
+          h-40
+          w-40
+          rounded-full
+          bg-green-400/10
+          blur-[80px]
+
+          sm:h-56
+          sm:w-56
+          sm:blur-[100px]
+        "
+        style={{
+          animation: isMobile
+            ? "none"
+            : "floatOrb 7s ease-in-out infinite",
+        }}
       />
 
+      <div
+        className="
+          skill-orb
+          pointer-events-none
+          absolute
+          right-[5%]
+          top-32
+          h-48
+          w-48
+          rounded-full
+          bg-green-500/10
+          blur-[90px]
+
+          sm:h-72
+          sm:w-72
+          sm:blur-[120px]
+        "
+        style={{
+          animation: isMobile
+            ? "none"
+            : "floatOrb 9s ease-in-out infinite",
+        }}
+      />
+
+      <div
+        className="
+          skill-orb
+          pointer-events-none
+          absolute
+          bottom-14
+          left-1/3
+          h-48
+          w-48
+          rounded-full
+          bg-emerald-300/10
+          blur-[100px]
+
+          sm:h-64
+          sm:w-64
+          sm:blur-[130px]
+        "
+        style={{
+          animation: isMobile
+            ? "none"
+            : "floatOrb 8s ease-in-out infinite",
+        }}
+      />
+
+      <div
+        className="
+          skill-orb
+          pointer-events-none
+          absolute
+          bottom-20
+          right-1/4
+          h-32
+          w-32
+          rounded-full
+          bg-green-200/10
+          blur-[80px]
+
+          sm:h-40
+          sm:w-40
+          sm:blur-[100px]
+        "
+        style={{
+          animation: isMobile
+            ? "none"
+            : "breathe 5s ease-in-out infinite",
+        }}
+      />
+
+      {/* ==========================================
+          MAIN CONTAINER
+      ========================================== */}
+
       <div className="mx-auto w-full max-w-7xl">
-        {/* heading */}
+        {/* ==========================================
+            HEADING
+        ========================================== */}
+
         <div
-          className="mb-16 text-center"
+          className="
+            mb-10
+            text-center
+
+            sm:mb-14
+
+            lg:mb-16
+          "
           style={{
-            animation: visible ? "headingSlide 0.9s ease forwards" : "none",
+            animation: visible
+              ? "slideInLeft3D 0.8s ease forwards"
+              : "none",
             opacity: visible ? 1 : 0,
           }}
         >
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.45em] text-yellow-400">
+          <p
+            className="
+              mb-3
+              text-xs
+              font-semibold
+              uppercase
+              tracking-[0.3em]
+              text-green-400
+
+              sm:mb-4
+              sm:text-sm
+              sm:tracking-[0.45em]
+            "
+          >
             Skills
           </p>
 
-          <h2 className="text-4xl font-extrabold leading-tight text-white sm:text-5xl md:text-6xl">
+          <h2
+            className="
+              text-3xl
+              font-extrabold
+              leading-tight
+              text-white
+
+              sm:text-5xl
+
+              md:text-6xl
+            "
+          >
             My{" "}
-            <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 bg-clip-text text-transparent">
+            <span
+              className="
+                bg-gradient-to-r
+                from-green-300
+                via-emerald-400
+                to-green-500
+                bg-clip-text
+                text-transparent
+              "
+            >
               Skills
             </span>
           </h2>
 
-          <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-gray-300 sm:text-base md:text-lg">
-            Technologies and tools I use to craft modern, immersive and
-            professional digital experiences with performance and style.
+          <p
+            className="
+              mx-auto
+              mt-4
+              max-w-2xl
+              px-2
+              text-sm
+              leading-relaxed
+              text-gray-300
+
+              sm:mt-5
+              sm:text-base
+
+              md:text-lg
+            "
+          >
+            Technologies and tools I use to craft modern,
+            immersive and professional digital experiences
+            with performance and style.
           </p>
         </div>
 
-        {/* cards */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {/* ==========================================
+            SKILL CARDS
+        ========================================== */}
+
+        <div
+          className="
+            grid
+            grid-cols-1
+            gap-4
+
+            sm:grid-cols-2
+            sm:gap-5
+
+            lg:grid-cols-3
+            lg:gap-6
+
+            xl:grid-cols-4
+          "
+        >
           {skills.map((skill, i) => {
             const Icon = skill.icon;
             const tilt = tilts[i];
@@ -200,113 +474,383 @@ const SkillsSection = () => {
                 key={skill.name}
                 onMouseMove={(e) => handleMouseMove(e, i)}
                 onMouseLeave={() => handleMouseLeave(i)}
-                className="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/5 p-5 shadow-[0_12px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-all duration-300 hover:-translate-y-3"
+                className="
+                  skill-card
+                  group
+                  relative
+                  w-full
+                  overflow-hidden
+                  rounded-2xl
+                  border
+                  border-white/10
+                  bg-white/5
+                  p-4
+                  shadow-[0_10px_35px_rgba(0,0,0,0.3)]
+                  backdrop-blur-md
+                  transition-all
+                  duration-300
+
+                  sm:rounded-3xl
+                  sm:p-5
+
+                  md:backdrop-blur-xl
+
+                  lg:p-6
+
+                  lg:hover:-translate-y-2
+                  lg:hover:border-green-400/30
+                "
                 style={{
-                  transform: `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) scale(1.03)`,
-                  transformStyle: "preserve-3d",
-                  animation: visible ? "slideInLeft3D 0.9s ease forwards" : "none",
-                  animationDelay: `${i * 140}ms`,
+                  transform: isMobile
+                    ? "none"
+                    : `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg)`,
+
+                  transformStyle: isMobile
+                    ? "flat"
+                    : "preserve-3d",
+
+                  animation: visible
+                    ? "slideInLeft3D 0.7s ease forwards"
+                    : "none",
+
+                  animationDelay: `${i * 100}ms`,
+
                   opacity: visible ? 1 : 0,
+
+                  willChange: visible
+                    ? "transform, opacity"
+                    : "auto",
                 }}
               >
-                {/* rotating gradient ring */}
-                <div className="pointer-events-none absolute inset-[-1px] rounded-[30px] overflow-hidden">
+                {/* ==========================================
+                    ROTATING RING
+                ========================================== */}
+
+                <div
+                  className="
+                    skill-ring
+                    pointer-events-none
+                    absolute
+                    inset-[-1px]
+                    overflow-hidden
+                    rounded-3xl
+                  "
+                >
                   <div
-                    className="absolute left-1/2 top-1/2 h-[180%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 blur-2xl"
+                    className="
+                      absolute
+                      left-1/2
+                      top-1/2
+                      h-[160%]
+                      w-[65%]
+                      rounded-full
+                      opacity-50
+                      blur-xl
+                    "
                     style={{
+                      transform:
+                        "translate(-50%, -50%)",
+
                       background:
-                        "conic-gradient(from 0deg, rgba(250,204,21,0.7), rgba(249,115,22,0.3), rgba(255,255,255,0.08), rgba(250,204,21,0.7))",
-                      animation: "glowRotate 7s linear infinite",
+                        "conic-gradient(from 0deg, rgba(34,197,94,0.6), rgba(16,185,129,0.2), rgba(255,255,255,0.05), rgba(34,197,94,0.6))",
+
+                      animation: isMobile
+                        ? "none"
+                        : "glowRotate 8s linear infinite",
                     }}
                   />
                 </div>
 
-                {/* card mask */}
-                <div className="absolute inset-[1px] rounded-[29px] bg-[rgba(10,10,10,0.45)] backdrop-blur-2xl" />
+                {/* ==========================================
+                    CARD MASK
+                ========================================== */}
 
-                {/* mouse follow light */}
                 <div
-                  className="pointer-events-none absolute inset-0 rounded-[30px] opacity-100 transition duration-200"
-                  style={{
-                    background: `radial-gradient(circle at ${tilt.x}% ${tilt.y}%, rgba(255,255,255,0.16), transparent 28%)`,
-                  }}
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-[1px]
+                    rounded-[15px]
+                    bg-[rgba(10,10,10,0.55)]
+
+                    sm:rounded-[23px]
+                  "
                 />
 
-                {/* top overlay */}
-                <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-gradient-to-br from-yellow-400/10 via-transparent to-orange-500/10" />
+                {/* ==========================================
+                    MOUSE FOLLOW LIGHT
+                ========================================== */}
 
-                {/* moving beam */}
+                {!isMobile && (
+                  <div
+                    className="
+                      pointer-events-none
+                      absolute
+                      inset-0
+                      rounded-3xl
+                    "
+                    style={{
+                      background: `radial-gradient(
+                        circle at ${tilt.x}% ${tilt.y}%,
+                        rgba(255,255,255,0.12),
+                        transparent 30%
+                      )`,
+                    }}
+                  />
+                )}
+
+                {/* ==========================================
+                    OVERLAY
+                ========================================== */}
+
                 <div
-                  className="pointer-events-none absolute -left-20 top-0 h-full w-16 bg-white/10 blur-2xl"
-                  style={{
-                    animation: "beamMove 3.6s linear infinite",
-                  }}
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-0
+                    rounded-3xl
+                    bg-gradient-to-br
+                    from-green-400/10
+                    via-transparent
+                    to-emerald-500/10
+                  "
                 />
 
-                {/* content */}
+                {/* ==========================================
+                    MOVING BEAM
+                ========================================== */}
+
+                {!isMobile && (
+                  <div
+                    className="
+                      skill-beam
+                      pointer-events-none
+                      absolute
+                      -left-20
+                      top-0
+                      h-full
+                      w-12
+                      bg-white/10
+                      blur-xl
+                    "
+                    style={{
+                      animation:
+                        "skillShine 4s linear infinite",
+                    }}
+                  />
+                )}
+
+                {/* ==========================================
+                    CONTENT
+                ========================================== */}
+
                 <div
-                  className="relative z-10"
-                  style={{ transform: "translateZ(55px)" }}
+                  className="
+                    relative
+                    z-10
+
+                    lg:[transform:translateZ(30px)]
+                  "
                 >
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-yellow-400/20 bg-yellow-400/10 text-2xl text-yellow-300 shadow-[0_0_24px_rgba(250,204,21,0.18)]">
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-yellow-300/10 to-orange-500/10" />
+                  {/* Header */}
+
+                  <div
+                    className="
+                      mb-4
+                      flex
+                      items-start
+                      justify-between
+                      gap-2
+
+                      sm:gap-3
+                    "
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      {/* ICON */}
+
+                      <div
+                        className="
+                          relative
+                          flex
+                          h-11
+                          w-11
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-xl
+                          border
+                          border-green-400/20
+                          bg-green-400/10
+                          text-xl
+                          text-green-300
+
+                          sm:h-12
+                          sm:w-12
+                          sm:rounded-2xl
+                          sm:text-2xl
+                        "
+                      >
+                        <div
+                          className="
+                            absolute
+                            inset-0
+                            rounded-xl
+                            bg-gradient-to-br
+                            from-green-300/10
+                            to-emerald-500/10
+
+                            sm:rounded-2xl
+                          "
+                        />
+
                         <Icon className="relative z-10" />
                       </div>
 
-                      <div>
-                        <h3 className="text-lg font-bold text-white">
+                      {/* TITLE */}
+
+                      <div className="min-w-0">
+                        <h3
+                          className="
+                            truncate
+                            text-base
+                            font-bold
+                            text-white
+
+                            sm:text-lg
+                          "
+                        >
                           {skill.name}
                         </h3>
-                        <p className="mt-1 text-[10px] uppercase tracking-[0.3em] text-yellow-300/80">
+
+                        <p
+                          className="
+                            mt-1
+                            text-[9px]
+                            uppercase
+                            tracking-[0.2em]
+                            text-green-300/80
+
+                            sm:text-[10px]
+                            sm:tracking-[0.3em]
+                          "
+                        >
                           Elite Skill
                         </p>
                       </div>
                     </div>
 
-                    <div className="rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-1 text-sm font-semibold text-yellow-300 shadow-[0_0_18px_rgba(250,204,21,0.15)]">
+                    {/* PERCENTAGE */}
+
+                    <div
+                      className="
+                        shrink-0
+                        rounded-full
+                        border
+                        border-green-400/20
+                        bg-green-400/10
+                        px-2.5
+                        py-1
+                        text-xs
+                        font-semibold
+                        text-green-300
+
+                        sm:px-3
+                        sm:text-sm
+                      "
+                    >
                       {skill.level}%
                     </div>
                   </div>
 
-                  {/* progress */}
+                  {/* ==========================================
+                      PROGRESS BAR
+                  ========================================== */}
+
                   <div className="mb-4">
-                    <div className="relative h-3 overflow-hidden rounded-full bg-white/10 shadow-inner">
+                    <div
+                      className="
+                        relative
+                        h-2.5
+                        overflow-hidden
+                        rounded-full
+                        bg-white/10
+
+                        sm:h-3
+                      "
+                    >
                       <div
-                        className="relative h-full rounded-full transition-all duration-1000 ease-out"
+                        className="
+                          relative
+                          h-full
+                          rounded-full
+                          transition-all
+                          duration-1000
+                          ease-out
+                        "
                         style={{
-                          width: visible ? `${skill.level}%` : "0%",
-                          transitionDelay: `${i * 130 + 300}ms`,
+                          width: visible
+                            ? `${skill.level}%`
+                            : "0%",
+
+                          transitionDelay: `${i * 100 + 250}ms`,
+
                           background:
-                            "linear-gradient(90deg, #fde047 0%, #f59e0b 55%, #f97316 100%)",
+                            "linear-gradient(90deg, #4ade80 0%, #22c55e 55%, #10b981 100%)",
+
                           boxShadow:
-                            "0 0 20px rgba(245,158,11,0.45), 0 0 36px rgba(249,115,22,0.22)",
+                            "0 0 15px rgba(34,197,94,0.35)",
                         }}
-                      >
-                        <div
-                          className="absolute inset-y-0 w-10 rounded-full bg-white/45 blur-sm"
-                          style={{
-                            animation: "skillShine 2.2s linear infinite",
-                          }}
-                        />
-                      </div>
+                      />
                     </div>
                   </div>
 
-                  {/* text */}
-                  <p className="text-sm leading-7 text-gray-300">
+                  {/* ==========================================
+                      DESCRIPTION
+                  ========================================== */}
+
+                  <p
+                    className="
+                      text-xs
+                      leading-6
+                      text-gray-300
+
+                      sm:text-sm
+                      sm:leading-7
+                    "
+                  >
                     Strong hands-on experience with{" "}
-                    <span className="font-semibold text-yellow-300">
+                    <span className="font-semibold text-green-300">
                       {skill.name}
                     </span>{" "}
-                    to build clean, interactive and high-quality projects with a
-                    premium front-end feel.
+                    to build clean, interactive and
+                    high-quality projects with a premium
+                    front-end feel.
                   </p>
                 </div>
 
-                {/* bottom glow */}
-                <div className="pointer-events-none absolute -bottom-10 left-1/2 h-20 w-32 -translate-x-1/2 rounded-full bg-orange-500/20 blur-2xl opacity-0 transition-all duration-500 group-hover:opacity-100" />
+                {/* ==========================================
+                    BOTTOM GLOW
+                ========================================== */}
+
+                <div
+                  className="
+                    pointer-events-none
+                    absolute
+                    -bottom-8
+                    left-1/2
+                    h-16
+                    w-28
+                    -translate-x-1/2
+                    rounded-full
+                    bg-green-500/15
+                    blur-2xl
+                    opacity-0
+                    transition-opacity
+                    duration-500
+
+                    lg:group-hover:opacity-100
+                  "
+                />
               </div>
             );
           })}

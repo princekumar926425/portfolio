@@ -159,7 +159,7 @@ const ChatWidget = () => {
     if (asksContact) {
       return {
         text: "You can contact me here 👇",
-        link: data.links.email,
+        link: `mailto:${data.links.email}`,
         linkLabel: "Send Email",
       };
     }
@@ -225,16 +225,22 @@ const ChatWidget = () => {
   return createPortal(
     <>
       {open && (
-        <div className="fixed bottom-24 right-5 z-[999999] w-[340px] overflow-hidden rounded-3xl border border-yellow-400/30 bg-[#0d0818]/95 shadow-[0_0_35px_rgba(255,196,0,0.18)] backdrop-blur-xl transition-all duration-300 hover:border-yellow-400/60 hover:shadow-[0_0_45px_rgba(255,196,0,0.28)]">
-          <div className="flex items-center justify-between rounded-t-3xl border-b border-yellow-400/20 px-4 py-4">
+        <div className="fixed bottom-24 right-5 z-[999999] w-[340px] overflow-hidden rounded-3xl border border-green-400/30 bg-[#07110c]/95 shadow-[0_0_35px_rgba(34,197,94,0.18)] backdrop-blur-xl transition-all duration-300 hover:border-green-400/60 hover:shadow-[0_0_45px_rgba(34,197,94,0.28)]">
+          
+          <div className="flex items-center justify-between rounded-t-3xl border-b border-green-400/20 px-4 py-4">
             <div>
-              <h3 className="text-lg font-semibold text-white">Chat Assistant</h3>
-              <p className="text-sm text-yellow-100/60">Ask anything about Prince</p>
+              <h3 className="text-lg font-semibold text-white">
+                Chat Assistant
+              </h3>
+
+              <p className="text-sm text-green-100/60">
+                Ask anything about Prince
+              </p>
             </div>
 
             <button
               onClick={() => setOpen(false)}
-              className="rounded-full p-2 text-yellow-300/80 transition hover:bg-yellow-400/10 hover:text-yellow-200"
+              className="rounded-full p-2 text-green-300/80 transition hover:bg-green-400/10 hover:text-green-200"
             >
               <X size={18} />
             </button>
@@ -244,13 +250,17 @@ const ChatWidget = () => {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex ${
+                  msg.sender === "user"
+                    ? "justify-end"
+                    : "justify-start"
+                }`}
               >
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     msg.sender === "user"
-                      ? "bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-black shadow-[0_0_18px_rgba(255,196,0,0.22)]"
-                      : "border border-yellow-400/15 bg-white/10 text-white"
+                      ? "bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 text-black shadow-[0_0_18px_rgba(34,197,94,0.22)]"
+                      : "border border-green-400/15 bg-white/10 text-white"
                   }`}
                 >
                   <p>{msg.text}</p>
@@ -259,7 +269,7 @@ const ChatWidget = () => {
                     <img
                       src={msg.image}
                       alt="Profile"
-                      className="mt-3 w-full rounded-xl border border-yellow-400/20"
+                      className="mt-3 w-full rounded-xl border border-green-400/20"
                     />
                   )}
 
@@ -269,9 +279,10 @@ const ChatWidget = () => {
                         href={msg.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-xl border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-xs font-medium text-yellow-300 transition hover:bg-yellow-400/20"
+                        className="inline-flex items-center gap-2 rounded-xl border border-green-400/20 bg-green-400/10 px-3 py-2 text-xs font-medium text-green-300 transition hover:bg-green-400/20"
                       >
                         {msg.linkLabel || "Open Link"}
+
                         <ExternalLink size={14} />
                       </a>
 
@@ -285,7 +296,7 @@ const ChatWidget = () => {
             ))}
           </div>
 
-          <div className="border-t border-yellow-400/15 p-3">
+          <div className="border-t border-green-400/15 p-3">
             <div className="flex items-center gap-2">
               <input
                 type="text"
@@ -295,12 +306,12 @@ const ChatWidget = () => {
                   if (e.key === "Enter") sendMessage();
                 }}
                 placeholder="Type..."
-                className="h-12 flex-1 rounded-2xl border border-yellow-400/20 bg-white/5 px-4 text-sm text-white outline-none placeholder:text-white/40 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20"
+                className="h-12 flex-1 rounded-2xl border border-green-400/20 bg-white/5 px-4 text-sm text-white outline-none placeholder:text-white/40 focus:border-green-400 focus:ring-2 focus:ring-green-400/20"
               />
 
               <button
                 onClick={sendMessage}
-                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-black shadow-[0_0_20px_rgba(255,196,0,0.28)] transition hover:scale-105"
+                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 text-black shadow-[0_0_20px_rgba(34,197,94,0.28)] transition hover:scale-105"
               >
                 <Send size={16} />
               </button>
@@ -311,7 +322,7 @@ const ChatWidget = () => {
 
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="fixed bottom-5 right-5 z-[999999] flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-black shadow-[0_0_30px_rgba(255,196,0,0.35)] transition hover:scale-105"
+        className="fixed bottom-5 right-5 z-[999999] flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 text-black shadow-[0_0_30px_rgba(34,197,94,0.35)] transition hover:scale-105"
         aria-label="Open chat"
       >
         <MessageCircle size={28} />

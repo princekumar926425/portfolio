@@ -127,13 +127,15 @@ const AboutSection = () => {
       </style>
 
       {/* background glow */}
-      <div className="absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-yellow-500/15 blur-[130px]" />
+      <div className="absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-green-500/15 blur-[130px]" />
+
       <div
-        className="absolute bottom-10 right-10 h-56 w-56 rounded-full bg-orange-500/10 blur-[120px]"
+        className="absolute bottom-10 right-10 h-56 w-56 rounded-full bg-green-500/10 blur-[120px]"
         style={{ animation: "floatSoft 7s ease-in-out infinite" }}
       />
+
       <div
-        className="absolute bottom-20 left-10 h-48 w-48 rounded-full bg-amber-400/10 blur-[120px]"
+        className="absolute bottom-20 left-10 h-48 w-48 rounded-full bg-emerald-400/10 blur-[120px]"
         style={{ animation: "floatSoft 8s ease-in-out infinite" }}
       />
 
@@ -144,25 +146,25 @@ const AboutSection = () => {
       >
         {/* heading */}
         <div className="mb-14 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-yellow-400">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-green-400">
             About Me
           </p>
 
           <h2 className="text-4xl font-bold text-foreground sm:text-5xl md:text-6xl">
             Hi, I&apos;m{" "}
-            <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-green-300 via-emerald-400 to-green-500 bg-clip-text text-transparent">
               {aboutText}
-              <span className="ml-1 animate-pulse text-yellow-300">|</span>
+              <span className="ml-1 animate-pulse text-green-300">|</span>
             </span>
           </h2>
 
           <p className="mx-auto mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             Hi, I&apos;m{" "}
-            <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 bg-clip-text text-transparent font-semibold">
+            <span className="bg-gradient-to-r from-green-300 via-emerald-400 to-green-500 bg-clip-text text-transparent font-semibold">
               Prince Kumar Ray
             </span>{" "}
-            — I build immersive, modern, and interactive web experiences with clean
-            code, smooth animation, and a premium 3D feel.
+            — I build immersive, modern, and interactive web experiences with
+            clean code, smooth animation, and a premium 3D feel.
           </p>
         </div>
 
@@ -182,16 +184,17 @@ const AboutSection = () => {
                 animation: "cardFloat 5s ease-in-out infinite",
               }}
             >
-              <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-r from-yellow-300/25 via-amber-400/20 to-orange-500/25 blur-2xl" />
+              <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-r from-green-300/25 via-emerald-400/20 to-green-500/25 blur-2xl" />
 
               <div className="relative flex h-full min-h-[550px] overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+                
                 {/* rotating glow */}
                 <div className="absolute inset-0 overflow-hidden rounded-[2rem]">
                   <div
                     className="absolute left-1/2 top-1/2 h-[180%] w-[70%] -translate-x-1/2 -translate-y-1/2 blur-2xl"
                     style={{
                       background:
-                        "conic-gradient(from 0deg, rgba(250,204,21,0.6), rgba(249,115,22,0.3), rgba(255,255,255,0.05), rgba(250,204,21,0.6))",
+                        "conic-gradient(from 0deg, rgba(34,197,94,0.6), rgba(16,185,129,0.35), rgba(255,255,255,0.05), rgba(34,197,94,0.6))",
                       animation: "glowRotate 6s linear infinite",
                     }}
                   />
@@ -215,14 +218,16 @@ const AboutSection = () => {
                   <img
                     src={myImage}
                     alt="Prince Kumar"
-                    className="h-[500px] w-full object-cover object-top transition-all duration-500 group-hover:scale-110 group-hover:rotate-[1deg] group-hover:shadow-[0_0_60px_rgba(250,204,21,0.35)]"
+                    className="h-[500px] w-full object-cover object-top transition-all duration-500 group-hover:scale-110 group-hover:rotate-[1deg] group-hover:shadow-[0_0_60px_rgba(34,197,94,0.35)]"
                   />
+
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                  <div className="absolute bottom-6 left-6 rounded-xl border border-yellow-400/20 bg-black/40 px-4 py-2 backdrop-blur-md">
-                    <p className="text-xs tracking-widest text-yellow-300">
+                  <div className="absolute bottom-6 left-6 rounded-xl border border-green-400/20 bg-black/40 px-4 py-2 backdrop-blur-md">
+                    <p className="text-xs tracking-widest text-green-300">
                       Frontend Dev
                     </p>
+
                     <p className="text-sm font-bold text-white">
                       Prince Kumar Ray
                     </p>
@@ -234,9 +239,10 @@ const AboutSection = () => {
 
           {/* who i am */}
           <div className="space-y-8">
-            <div className="relative flex min-h-[500px] flex-col justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-md transition duration-500 hover:-translate-y-3 hover:shadow-[0_20px_60px_rgba(245,158,11,0.35)]">
+            <div className="relative flex min-h-[500px] flex-col justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-md transition duration-500 hover:-translate-y-3 hover:shadow-[0_20px_60px_rgba(34,197,94,0.35)]">
+              
               {/* glow background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-transparent to-orange-500/10" />
+              <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 via-transparent to-emerald-500/10" />
 
               {/* animated border */}
               <div
@@ -255,11 +261,11 @@ const AboutSection = () => {
 
                 <p className="mb-4 leading-relaxed text-muted-foreground">
                   I&apos;m{" "}
-                  <span className="font-semibold text-yellow-300">
+                  <span className="font-semibold text-green-300">
                     Prince Kumar Ray
                   </span>
                   , a passionate frontend developer and dedicated
-                  <span className="font-semibold text-yellow-300">
+                  <span className="font-semibold text-green-300">
                     {" "}DSA problem solver
                   </span>.
                 </p>

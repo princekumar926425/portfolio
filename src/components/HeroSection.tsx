@@ -7,16 +7,17 @@ interface HeroSectionProps {
 
 const words = [
   "Frontend Developer",
+  "Mernstack Developer",
   "Prince Kumar Ray",
   "Creative Coder",
   "UI Builder",
 ];
 
 const colors = [
-  "from-yellow-300 via-amber-400 to-orange-500",
-  "from-yellow-200 via-yellow-400 to-amber-500",
-  "from-amber-300 via-yellow-400 to-orange-400",
-  "from-yellow-400 via-orange-400 to-amber-600",
+  "from-green-300 via-emerald-400 to-cyan-500",
+  "from-green-200 via-green-400 to-emerald-500",
+  "from-emerald-300 via-green-400 to-cyan-400",
+  "from-green-400 via-emerald-500 to-cyan-500",
 ];
 
 const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
@@ -25,30 +26,55 @@ const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
   const [wordIndex, setWordIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  /* =====================================================
+     INTRO ANIMATION
+     ===================================================== */
+
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 300);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => {
+      setVisible(true);
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
+
+  /* =====================================================
+     TYPING EFFECT
+     ===================================================== */
 
   useEffect(() => {
     const currentWord = words[wordIndex];
+
     const typingSpeed = isDeleting ? 50 : 100;
 
     const timer = setTimeout(() => {
       if (!isDeleting) {
-        const updatedText = currentWord.substring(0, text.length + 1);
+        const updatedText = currentWord.substring(
+          0,
+          text.length + 1
+        );
+
         setText(updatedText);
 
         if (updatedText === currentWord) {
-          setTimeout(() => setIsDeleting(true), 1200);
+          setTimeout(() => {
+            setIsDeleting(true);
+          }, 1200);
         }
       } else {
-        const updatedText = currentWord.substring(0, text.length - 1);
+        const updatedText = currentWord.substring(
+          0,
+          text.length - 1
+        );
+
         setText(updatedText);
 
         if (updatedText === "") {
           setIsDeleting(false);
-          setWordIndex((prev) => (prev + 1) % words.length);
+
+          setWordIndex(
+            (prev) => (prev + 1) % words.length
+          );
         }
       }
     }, typingSpeed);
@@ -57,100 +83,450 @@ const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
   }, [text, isDeleting, wordIndex]);
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 text-center">
-      {/* background glow */}
-      <div className="absolute left-1/2 top-24 h-72 w-72 -translate-x-1/2 rounded-full bg-yellow-500/10 blur-[130px]" />
-      <div className="absolute bottom-16 right-8 h-52 w-52 rounded-full bg-orange-500/10 blur-[120px]" />
-      <div className="absolute bottom-20 left-8 h-44 w-44 rounded-full bg-amber-400/10 blur-[110px]" />
+    <div
+      className="
+        relative
+        z-10
+        flex
+        min-h-screen
+        w-full
+        flex-col
+        items-center
+        justify-center
+        overflow-hidden
+        px-4
+        pb-16
+        pt-24
+        text-center
 
-      {/* TEXT */}
+        sm:px-6
+        sm:pb-20
+        sm:pt-28
+
+        lg:px-8
+        lg:pt-20
+      "
+    >
+      {/* =================================================
+          BACKGROUND GLOW
+          ================================================= */}
+
       <div
-        className={`transition-all duration-1000 ${
-          visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-        }`}
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-20
+          h-48
+          w-48
+          -translate-x-1/2
+          rounded-full
+          bg-green-500/10
+          blur-[90px]
+
+          sm:top-24
+          sm:h-72
+          sm:w-72
+          sm:blur-[130px]
+        "
+      />
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          bottom-16
+          right-[-30px]
+          h-40
+          w-40
+          rounded-full
+          bg-emerald-500/10
+          blur-[100px]
+
+          sm:right-8
+          sm:h-52
+          sm:w-52
+          sm:blur-[120px]
+        "
+      />
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          bottom-20
+          left-[-30px]
+          h-36
+          w-36
+          rounded-full
+          bg-cyan-400/10
+          blur-[90px]
+
+          sm:left-8
+          sm:h-44
+          sm:w-44
+          sm:blur-[110px]
+        "
+      />
+
+      {/* =================================================
+          TEXT CONTENT
+          ================================================= */}
+
+      <div
+        className={`
+          w-full
+          max-w-4xl
+          transition-all
+          duration-1000
+
+          ${
+            visible
+              ? "translate-y-0 opacity-100"
+              : "translate-y-8 opacity-0"
+          }
+        `}
       >
-        <p className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-yellow-300/80">
+        {/* Welcome */}
+
+        <p
+          className="
+            mb-3
+            text-[10px]
+            font-medium
+            uppercase
+            tracking-[0.2em]
+            text-green-300/80
+
+            sm:mb-4
+            sm:text-sm
+            sm:tracking-[0.3em]
+          "
+        >
           Welcome to my world
         </p>
 
-        <h1 className="mb-4 text-4xl font-bold leading-tight text-white sm:text-6xl md:text-7xl">
+        {/* Main Heading */}
+
+        <h1
+          className="
+            mx-auto
+            mb-4
+            max-w-[340px]
+            text-3xl
+            font-bold
+            leading-[1.15]
+            text-white
+
+            sm:max-w-3xl
+            sm:text-5xl
+            md:text-6xl
+            lg:text-7xl
+          "
+        >
           Hi, I&apos;m{" "}
           <span
-            className={`bg-gradient-to-r ${colors[wordIndex]} bg-clip-text text-transparent transition-all duration-500 drop-shadow-[0_0_18px_rgba(250,204,21,0.28)]`}
+            className={`
+              bg-gradient-to-r
+              ${colors[wordIndex]}
+              bg-clip-text
+              text-transparent
+              drop-shadow-[0_0_18px_rgba(34,197,94,0.45)]
+              transition-all
+              duration-500
+            `}
           >
             {text}
-            <span className="ml-1 animate-pulse text-yellow-300">|</span>
+            <span className="ml-1 animate-pulse text-green-300">
+              |
+            </span>
           </span>
         </h1>
 
-        <p className="mb-2 text-xl font-light text-white/70 sm:text-2xl md:text-3xl">
+        {/* Subtitle */}
+
+        <p
+          className="
+            mb-2
+            text-lg
+            font-light
+            text-white/70
+
+            sm:text-2xl
+            md:text-3xl
+          "
+        >
           A Creative Developer
         </p>
 
-        <p className="mx-auto mb-10 max-w-md text-sm text-white/50">
-          Crafting immersive digital experiences with code, design & imagination.
+        {/* Description */}
+
+        <p
+          className="
+            mx-auto
+            mb-8
+            max-w-[330px]
+            text-xs
+            leading-6
+            text-white/50
+
+            sm:mb-10
+            sm:max-w-md
+            sm:text-sm
+            sm:leading-relaxed
+          "
+        >
+          Crafting immersive digital experiences with code,
+          design &amp; imagination.
         </p>
       </div>
 
-      {/* ROUND IMAGE */}
+      {/* =================================================
+          PROFILE IMAGE
+          ================================================= */}
+
       <div
-        className={`mt-6 flex justify-center transition-all duration-1000 delay-200 ${
-          visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-        }`}
+        className={`
+          mt-2
+          flex
+          justify-center
+          transition-all
+          duration-1000
+          delay-200
+
+          sm:mt-4
+
+          ${
+            visible
+              ? "translate-y-0 opacity-100"
+              : "translate-y-8 opacity-0"
+          }
+        `}
       >
         <div className="relative flex items-center justify-center">
-          {/* outer glow */}
-          <div className="absolute h-[320px] w-[320px] rounded-full bg-yellow-400/20 blur-3xl animate-pulse" />
+          {/* Outer glow */}
 
-          {/* soft second glow */}
-          <div className="absolute h-[280px] w-[280px] rounded-full bg-amber-300/10 blur-2xl" />
+          <div
+            className="
+              pointer-events-none
+              absolute
+              h-[230px]
+              w-[230px]
+              rounded-full
+              bg-green-400/20
+              blur-3xl
+              animate-pulse
 
-          {/* neon ring */}
-          <div className="relative flex h-[250px] w-[250px] items-center justify-center rounded-full border-[5px] border-yellow-400 shadow-[0_0_25px_rgba(250,204,21,0.8),0_0_70px_rgba(250,204,21,0.28)] transition duration-300 hover:scale-105 md:h-[290px] md:w-[290px]">
-            {/* inner circle */}
-            <div className="h-[215px] w-[215px] overflow-hidden rounded-full bg-[#0a0a14] md:h-[250px] md:w-[250px]">
+              sm:h-[320px]
+              sm:w-[320px]
+            "
+          />
+
+          {/* Second glow */}
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              h-[210px]
+              w-[210px]
+              rounded-full
+              bg-emerald-300/10
+              blur-2xl
+
+              sm:h-[280px]
+              sm:w-[280px]
+            "
+          />
+
+          {/* Neon Ring */}
+
+          <div
+            className="
+              relative
+              flex
+              h-[190px]
+              w-[190px]
+              items-center
+              justify-center
+              rounded-full
+              border-[4px]
+              border-green-400
+              shadow-[0_0_20px_rgba(34,197,94,0.8),0_0_55px_rgba(34,197,94,0.35)]
+              transition
+              duration-300
+
+              hover:scale-105
+
+              sm:h-[250px]
+              sm:w-[250px]
+              sm:border-[5px]
+
+              md:h-[290px]
+              md:w-[290px]
+            "
+          >
+            {/* Inner Circle */}
+
+            <div
+              className="
+                h-[164px]
+                w-[164px]
+                overflow-hidden
+                rounded-full
+                bg-[#0a0a14]
+
+                sm:h-[215px]
+                sm:w-[215px]
+
+                md:h-[250px]
+                md:w-[250px]
+              "
+            >
               <img
                 src={myImage}
-                alt="Prince Kumar"
-                className="h-full w-full rounded-full object-cover object-top"
+                alt="Prince Kumar Ray"
+                loading="eager"
+                className="
+                  h-full
+                  w-full
+                  rounded-full
+                  object-cover
+                  object-top
+                "
               />
             </div>
           </div>
         </div>
       </div>
 
-      {/* BUTTONS */}
+      {/* =================================================
+          BUTTONS
+          ================================================= */}
+
       <div
-        className={`mt-10 flex flex-wrap items-center justify-center gap-4 transition-all duration-1000 delay-500 ${
-          visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-        }`}
+        className={`
+          mt-8
+          flex
+          w-full
+          max-w-[340px]
+          flex-col
+          items-center
+          justify-center
+          gap-3
+          transition-all
+          duration-1000
+          delay-500
+
+          sm:mt-10
+          sm:max-w-none
+          sm:flex-row
+          sm:gap-4
+
+          ${
+            visible
+              ? "translate-y-0 opacity-100"
+              : "translate-y-8 opacity-0"
+          }
+        `}
       >
+        {/* Get Started */}
+
         <button
           onClick={onGetStarted}
-          className="rounded-full bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 px-8 py-4 text-lg font-semibold text-black shadow-[0_0_30px_rgba(250,204,21,0.35)] transition duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(245,158,11,0.45)]"
+          className="
+            w-full
+            rounded-full
+            bg-gradient-to-r
+            from-green-300
+            via-emerald-400
+            to-cyan-500
+            px-7
+            py-3
+            text-sm
+            font-semibold
+            text-black
+            shadow-[0_0_30px_rgba(34,197,94,0.45)]
+            transition
+            duration-300
+            hover:scale-105
+            hover:shadow-[0_0_40px_rgba(34,197,94,0.7)]
+
+            sm:w-auto
+            sm:px-8
+            sm:py-4
+            sm:text-lg
+          "
         >
           Get Started
         </button>
+
+        {/* Resume */}
 
         <a
           href="/resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-full border border-yellow-400/70 bg-white/5 px-8 py-4 text-lg font-semibold text-yellow-300 shadow-[0_0_20px_rgba(250,204,21,0.12)] backdrop-blur-md transition duration-300 hover:scale-105 hover:bg-yellow-400 hover:text-black hover:shadow-[0_0_35px_rgba(250,204,21,0.45)]"
+          className="
+            w-full
+            rounded-full
+            border
+            border-green-400/70
+            bg-white/5
+            px-7
+            py-3
+            text-sm
+            font-semibold
+            text-green-300
+            shadow-[0_0_20px_rgba(34,197,94,0.25)]
+            backdrop-blur-md
+            transition
+            duration-300
+            hover:scale-105
+            hover:bg-green-400
+            hover:text-black
+            hover:shadow-[0_0_35px_rgba(34,197,94,0.45)]
+
+            sm:w-auto
+            sm:px-8
+            sm:py-4
+            sm:text-lg
+          "
         >
           Resume
         </a>
       </div>
 
-      {/* SCROLL */}
+      {/* =================================================
+          SCROLL INDICATOR
+          ================================================= */}
+
       <div
-        className={`absolute bottom-10 transition-all duration-1000 delay-1000 ${
-          visible ? "opacity-100" : "opacity-0"
-        }`}
+        className={`
+          mt-10
+          hidden
+          transition-all
+          duration-1000
+          delay-1000
+
+          sm:absolute
+          sm:bottom-8
+          sm:mt-0
+          sm:block
+
+          ${
+            visible
+              ? "opacity-100"
+              : "opacity-0"
+          }
+        `}
       >
-        <div className="flex flex-col items-center gap-2 text-yellow-200/40">
-          <span className="text-xs uppercase tracking-widest">Scroll</span>
-          <div className="h-8 w-px bg-gradient-to-b from-yellow-200/50 to-transparent" />
+        <div className="flex flex-col items-center gap-2 text-green-200/40">
+          <span className="text-xs uppercase tracking-widest">
+            Scroll
+          </span>
+
+          <div className="h-8 w-px bg-gradient-to-b from-green-200/50 to-transparent" />
         </div>
       </div>
     </div>

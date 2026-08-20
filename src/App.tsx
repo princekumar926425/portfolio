@@ -8,23 +8,34 @@ import ChatWidget from "./components/ChatWidget";
 
 const queryClient = new QueryClient();
 
-/* 🔥 Cursor Light Component */
+/* =========================================================
+   CURSOR LIGHT
+   ========================================================= */
+
 function CursorLight() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const move = (e: MouseEvent) => {
-      setPos({ x: e.clientX, y: e.clientY });
+    // Cursor effect is mainly for desktop devices.
+    // On touch/mobile devices there is no mouse cursor.
+    const handleMouseMove = (e: MouseEvent) => {
+      setPos({
+        x: e.clientX,
+        y: e.clientY,
+      });
     };
 
-    window.addEventListener("mousemove", move);
+    window.addEventListener("mousemove", handleMouseMove);
 
-    return () => window.removeEventListener("mousemove", move);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   return (
     <div
       className="cursor-light"
+      aria-hidden="true"
       style={{
         left: `${pos.x}px`,
         top: `${pos.y}px`,
@@ -33,21 +44,33 @@ function CursorLight() {
   );
 }
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
 
-      {/* 🔥 ADD THIS LINE */}
-      <CursorLight />
+/* =========================================================
+   APP
+   ========================================================= */
 
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
 
-      <ChatWidget />
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+        {/* Desktop cursor glow */}
+        <CursorLight />
+
+        {/* Main application */}
+        <main className="w-full min-w-0 overflow-x-hidden">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+
+        {/* Floating Chat Widget */}
+        <ChatWidget />
+
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

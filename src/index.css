@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =========================================================
+   ROOT THEME
+   ========================================================= */
+
 @layer base {
   :root {
     --background: 260 20% 4%;
@@ -15,7 +19,8 @@
     --popover: 260 20% 8%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 280 80% 60%;
+    /* GREEN THEME */
+    --primary: 150 80% 50%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 260 30% 14%;
@@ -32,13 +37,14 @@
 
     --border: 260 20% 16%;
     --input: 260 20% 16%;
-    --ring: 280 80% 60%;
+    --ring: 150 80% 50%;
 
     --radius: 1rem;
 
+    /* NEON COLORS */
     --neon-pink: 330 90% 65%;
-    --neon-purple: 280 80% 60%;
-    --neon-blue: 220 90% 60%;
+    --neon-purple: 150 80% 50%;
+    --neon-blue: 180 100% 45%;
     --neon-green: 150 80% 50%;
 
     --glow-pink: 0 0% 0% / 0;
@@ -46,73 +52,144 @@
 
     --sidebar-background: 260 20% 6%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 280 80% 60%;
+    --sidebar-primary: 150 80% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 260 20% 14%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 260 20% 16%;
-    --sidebar-ring: 280 80% 60%;
+    --sidebar-ring: 150 80% 50%;
   }
 }
 
+/* =========================================================
+   GLOBAL BASE STYLES
+   ========================================================= */
+
 @layer base {
-  * {
-    @apply border-border;
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply bg-background text-foreground font-sans;
+
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
     font-family: 'Poppins', sans-serif;
+
+    overflow-x: hidden;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+
+  img,
+  video {
+    height: auto;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  a {
+    text-decoration: none;
   }
 }
+
+/* =========================================================
+   CUSTOM UTILITIES
+   ========================================================= */
 
 @layer utilities {
   .text-glow {
     text-shadow:
-      0 0 20px hsl(var(--neon-purple) / 0.5),
-      0 0 40px hsl(var(--neon-purple) / 0.3),
-      0 0 80px hsl(var(--neon-purple) / 0.1);
+      0 0 20px hsl(var(--neon-green) / 0.5),
+      0 0 40px hsl(var(--neon-green) / 0.3),
+      0 0 80px hsl(var(--neon-green) / 0.15);
   }
 
   .text-glow-subtle {
     text-shadow:
-      0 0 10px hsl(var(--neon-purple) / 0.3),
-      0 0 20px hsl(var(--neon-purple) / 0.15);
+      0 0 10px hsl(var(--neon-green) / 0.3),
+      0 0 20px hsl(var(--neon-green) / 0.15);
   }
 
   .glow-border {
     box-shadow:
-      0 0 15px hsl(var(--neon-purple) / 0.3),
-      0 0 30px hsl(var(--neon-purple) / 0.1),
-      inset 0 0 15px hsl(var(--neon-purple) / 0.1);
+      0 0 15px hsl(var(--neon-green) / 0.4),
+      0 0 30px hsl(var(--neon-green) / 0.2),
+      inset 0 0 15px hsl(var(--neon-green) / 0.1);
   }
 
   .glass {
     @apply backdrop-blur-xl border border-foreground/10;
+
     background: hsl(var(--card) / 0.6);
   }
 
   .gradient-text {
     @apply bg-clip-text text-transparent;
+
     background-image: linear-gradient(
       135deg,
-      hsl(var(--neon-pink)),
-      hsl(var(--neon-purple)),
-      hsl(var(--neon-blue))
+      #22c55e,
+      #4ade80,
+      #06b6d4
     );
   }
 
   .btn-glow {
     @apply relative overflow-hidden rounded-full px-8 py-4 font-semibold transition-all duration-300;
-    background: linear-gradient(135deg, hsl(var(--neon-purple)), hsl(var(--neon-blue)));
-    box-shadow: 0 0 20px hsl(var(--neon-purple) / 0.4);
+
+    background: linear-gradient(
+      135deg,
+      #22c55e,
+      #16a34a
+    );
+
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
   }
 
   .btn-glow:hover {
     transform: scale(1.05);
+
     box-shadow:
-      0 0 30px hsl(var(--neon-purple) / 0.6),
-      0 0 60px hsl(var(--neon-purple) / 0.3);
+      0 0 30px rgba(34, 197, 94, 0.8),
+      0 0 60px rgba(34, 197, 94, 0.4);
   }
 
   .section-card {
@@ -120,9 +197,55 @@
   }
 }
 
-html {
-  scroll-behavior: smooth;
+/* =========================================================
+   RESPONSIVE SAFETY
+   ========================================================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .section-card {
+    padding: 1.5rem;
+  }
 }
+
+/* Mobile */
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .section-card {
+    padding: 1.25rem;
+    border-radius: 1rem;
+  }
+
+  .btn-glow {
+    @apply px-5 py-3 text-sm;
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  html {
+    font-size: 14px;
+  }
+
+  .section-card {
+    padding: 1rem;
+  }
+
+  .btn-glow {
+    @apply px-4 py-2.5 text-sm;
+  }
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -133,6 +256,16 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--neon-purple) / 0.3);
+  background: rgba(34, 197, 94, 0.4);
   border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 197, 94, 0.7);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(34, 197, 94, 0.4) hsl(var(--background));
 }
